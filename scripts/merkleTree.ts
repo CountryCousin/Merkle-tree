@@ -3,7 +3,7 @@ const keccak256 = require('keccak256');
 
 // list of wallet addresses to be whiteListed.
 
-let whitelistAddresses = [
+let listOfWhitelistedAddresses = [
     "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4",
     "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2",
     "0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db",
@@ -21,33 +21,31 @@ let whitelistAddresses = [
     "0xdD870fA1b7C4700F2BD7f44238821C26f7392148",
   ];
 
-// Create a new array of `leafNodes` by hashing all indexes of the `whitelistAddresses`
-// using `keccak256`. Then creates a Merkle Tree object using keccak256 as the algorithm.
-//
-// The leaves, merkleTree, and rootHas are all PRE-DETERMINED prior to whitelist claim
-const leafNodes = whitelistAddresses.map(addr => keccak256(addr));
-const merkleTree = new MerkleTree(leafNodes, keccak256, {  sortPairs: true});
 
-// 4. Get root hash of the `merkleeTree` in hexadecimal format (0x)
+
+// Creating a new array of `childNodes` by hashing all indexes of the `listOfWhitelistedAddresses`
+
+const childNodes = listOfWhitelistedAddresses.map(approvedAddress => keccak256(approvedAddress));
+
+// using `keccak256`. creates a Merkle Tree object using keccak256 as the algorithm.
+// The leaves, merkleTree, and rootHash are all PRE-DETERMINED prior to whitelist claim
+const merkleTree = new MerkleTree(childNodes, keccak256, {  sortPairs: true});
+
+//  Root hash of the `merkleeTree` in hexadecimal format (0x)
 const rootHash = merkleTree.getRoot();
 console.log('Whitelist Merkle Tree\n', merkleTree.toString());
-console.log("Root Hash: ", rootHash);
+console.log(`Root Hash:`, rootHash);
 
 
+// to check if an address is whitelisted
+//inputing an unindexed-address(an address that is not in "listOfWhitelistedAddresses"), throws an error
+const confirmWhitelistedAddress = childNodes[14];
 
-// CLIENT-SIDE: Use `msg.sender` address to query and API that returns the merkle proof
-// required to derive the root hash of the Merkle Tree
-
-// ✅ Positive verification of address
-const claimingAddress = leafNodes[3];
-// ❌ Change this address to get a `false` verification
-// const claimingAddress = keccak256("0X5B38DA6A701C568545DCFCB03FCB875F56BEDDD6");
-
-// `getHexProof` returns the neighbour leaf and all parent nodes hashes that will
+// `getHexProof` method returns the neighbour leaf and all parent nodes hashes that will
 // be required to derive the Merkle Trees root hash.
-const hexProof = merkleTree.getHexProof(claimingAddress);
-console.log(hexProof);
+const ourProof = merkleTree.getHexProof(confirmWhitelistedAddress);
+console.log(ourProof);
 
-// ✅ - ❌: Verify is claiming address is in the merkle tree or not.
+//  Verify is claiming address is in the merkle tree or not.
 // This would be implemented in your Solidity Smart Contract
-console.log(merkleTree.verify(hexProof, claimingAddress, rootHash));
+console.log(merkleTree.verify(ourProof, confirmWhitelistedAddress, rootHash));
