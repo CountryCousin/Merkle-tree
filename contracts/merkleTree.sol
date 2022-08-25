@@ -4,23 +4,23 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 contract MerkleTreeExample {
-    // --- PROPERTIES ---- //
 
-    // Calculated from `merkle_tree.js`
-    bytes32 public merkleRoot =
-        0x2e35b61278fbcec3f3b0bb361d928e373e089a61758af09690ce0a5391078ff2;
 
-    mapping(address => bool) public whitelistClaimed;
+    // Calculated from `merkleTree.ts`
+    bytes32 public rootHash =
+        0xdf73116724cbd034759c0d3af1cb6e91abfc75d4f2ef4a023c6b38048708377c;
 
-    // --- FUNCTIONS ---- //
+    mapping(address => bool) public hasClaimed;
+
+    
 
     function whitelistMint(bytes32[] calldata _merkleProof) public {
-        require(!whitelistClaimed[msg.sender], "Address already claimed");
-        bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+        require(!hasClaimed[msg.sender], "Address already claimed");
+        bytes32 childLeaf = keccak256(abi.encodePacked(msg.sender));
         require(
-            MerkleProof.verify(_merkleProof, merkleRoot, leaf),
+            MerkleProof.verify(_merkleProof, rootHash, childLeaf),
             "Invalid Merkle Proof."
         );
-        whitelistClaimed[msg.sender] = true;
+        hasClaimed[msg.sender] = true;
     }
 }

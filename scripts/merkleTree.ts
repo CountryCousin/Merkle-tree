@@ -47,5 +47,5 @@ const ourProof = merkleTree.getHexProof(confirmWhitelistedAddress);
 console.log(ourProof);
 
 //  Verify is claiming address is in the merkle tree or not.
-// This would be implemented in your Solidity Smart Contract
+// This would be implemented in Solidity Smart Contract
 console.log(merkleTree.verify(ourProof, confirmWhitelistedAddress, rootHash));
