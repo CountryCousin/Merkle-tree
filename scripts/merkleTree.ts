@@ -1,38 +1,45 @@
 const { MerkleTree } = require('merkletreejs');
 const keccak256 = require('keccak256');
 
-// 2. Collect list of wallet addresses from competition, raffle, etc.
-// Store list of addresses in some data sheeet (Google Sheets or Excel)
+// list of wallet addresses to be whiteListed.
+
 let whitelistAddresses = [
-    "0X5B38DA6A701C568545DCFCB03FCB875F56BEDDC4",
-    "0X5A641E5FB72A2FD9137312E7694D42996D689D99",
-    "0XDCAB482177A592E424D1C8318A464FC922E8DE40",
-    "0X6E21D37E07A6F7E53C7ACE372CEC63D4AE4B6BD0",
-    "0X09BAAB19FC77C19898140DADD30C4685C597620B",
-    "0XCC4C29997177253376528C05D3DF91CF2D69061A",
-    "0xdD870fA1b7C4700F2BD7f44238821C26f7392148" // The address in remix
+    "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4",
+    "0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2",
+    "0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db",
+    "0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB",
+    "0x617F2E2fD72FD9D5503197092aC168c91465E7f2",
+    "0x17F6AD8Ef982297579C203069C1DbfFE4348c372",
+    "0x5c6B0f7Bf3E7ce046039Bd8FABdfD3f9F5021678",
+    "0x03C6FcED478cBbC9a4FAB34eF9f40767739D1Ff7",
+    "0x1aE0EA34a72D944a8C7603FfB3eC30a6669E454C",
+    "0x0A098Eda01Ce92ff4A4CCb7A4fFFb5A43EBC70DC",
+    "0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c",
+    "0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C",
+    "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB",
+    "0x583031D1113aD414F02576BD6afaBfb302140225", 
+    "0xdD870fA1b7C4700F2BD7f44238821C26f7392148",
   ];
 
-// 3. Create a new array of `leafNodes` by hashing all indexes of the `whitelistAddresses`
+// Create a new array of `leafNodes` by hashing all indexes of the `whitelistAddresses`
 // using `keccak256`. Then creates a Merkle Tree object using keccak256 as the algorithm.
 //
 // The leaves, merkleTree, and rootHas are all PRE-DETERMINED prior to whitelist claim
 const leafNodes = whitelistAddresses.map(addr => keccak256(addr));
-const merkleTree = new MerkleTree(leafNodes, keccak256, { sortPairs: true});
+const merkleTree = new MerkleTree(leafNodes, keccak256, {  sortPairs: true});
 
 // 4. Get root hash of the `merkleeTree` in hexadecimal format (0x)
-// Print out the Entire Merkle Tree.
 const rootHash = merkleTree.getRoot();
 console.log('Whitelist Merkle Tree\n', merkleTree.toString());
 console.log("Root Hash: ", rootHash);
 
-// ***** ***** ***** ***** ***** ***** ***** ***** // 
+
 
 // CLIENT-SIDE: Use `msg.sender` address to query and API that returns the merkle proof
 // required to derive the root hash of the Merkle Tree
 
 // ✅ Positive verification of address
-const claimingAddress = leafNodes[6];
+const claimingAddress = leafNodes[3];
 // ❌ Change this address to get a `false` verification
 // const claimingAddress = keccak256("0X5B38DA6A701C568545DCFCB03FCB875F56BEDDD6");
 
